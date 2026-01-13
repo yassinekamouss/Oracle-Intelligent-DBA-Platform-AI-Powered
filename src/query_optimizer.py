@@ -67,11 +67,23 @@ class QueryOptimizer:
                 # Nettoyage et conversion en JSON
                 clean_json = analysis_raw.replace("```json", "").replace("```", "").strip()
                 analysis_data = json.loads(clean_json)
+                # On enrichit l'analyse avec les métadonnées réelles de la requête
                 analysis_data["sql_id"] = sql_id
+                analysis_data["sql_text"] = sql_text
+                analysis_data["plan_operation"] = plan_op
+                # OBJECT_NAME peut ne pas exister selon les données, on gère ça proprement
+                analysis_data["object_name"] = row.get("OBJECT_NAME", "")
                 results.append(analysis_data)
             except Exception as e:
                 print(f"⚠️ Erreur de parsing pour {sql_id}: {e}")
-                results.append({"sql_id": sql_id, "raw_response": analysis_raw})
+                # Même en cas d'erreur de parsing, on garde le contexte SQL/plan
+                results.append({
+                    "sql_id": sql_id,
+                    "sql_text": sql_text,
+                    "plan_operation": plan_op,
+                    "object_name": row.get("OBJECT_NAME", ""),
+                    "raw_response": analysis_raw
+                })
 
         # 4. Sauvegarde des analyses pour le Dashboard (Module 9)
         with open("data/query_analysis.json", "w", encoding='utf-8') as f:

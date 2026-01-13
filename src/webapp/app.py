@@ -1,6 +1,7 @@
 import os
 import json
 import sys
+import csv
 from flask import Flask, render_template, request, jsonify
 
 # Ajout du chemin parent pour importer vos modules existants
@@ -31,6 +32,28 @@ def load_json_data(filename, directory='data'):
             return None
     return None
 
+
+def load_sql_text_by_sql_id():
+    """Construit un mapping SQL_ID -> SQL_TEXT depuis performance_metrics.csv (si présent)."""
+    sql_by_id = {}
+    perf_path = os.path.join(os.path.dirname(__file__), '../../data', 'performance_metrics.csv')
+    if not os.path.exists(perf_path):
+        return sql_by_id
+
+    try:
+        with open(perf_path, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                sid = row.get('SQL_ID')
+                sql_text = row.get('SQL_TEXT')
+                if sid and sql_text:
+                    sql_by_id[sid] = sql_text
+    except Exception:
+        # En cas de problème de lecture, on renvoie simplement un mapping vide
+        return {}
+
+    return sql_by_id
+
 def get_security_status(data):
     """Détermine la couleur du statut sécurité"""
     if not data: return "grey"
@@ -52,8 +75,30 @@ def get_system_context():
     # Performance
     perf = load_json_data('query_analysis.json')
     if perf and isinstance(perf, list):
-        exemples = [q.get('sql_id') for q in perf[:2]]
-        context += f"[PERFORMANCE] {len(perf)} requêtes lentes. Ex: {', '.join(exemples)}.\n"
+        context += f"[PERFORMANCE] {len(perf)} requêtes lentes analysées. Détails des plus récentes :\n"
+
+        # Mapping SQL_ID -> SQL_TEXT (depuis les métriques brutes)
+        sql_map = load_sql_text_by_sql_id()
+
+        # On détaille quelques requêtes lentes (ID, SQL, plan, résumé)
+        for q in perf[:3]:
+            sid = q.get('sql_id', 'N/A')
+
+            # On essaye plusieurs clés au cas où la structure JSON évoluerait
+            sql_text = q.get('sql_text') or q.get('SQL_TEXT') or sql_map.get(sid, '')
+            if sql_text and len(sql_text) > 120:
+                sql_preview = sql_text[:120] + '...'
+            else:
+                sql_preview = sql_text
+
+            plan_op = q.get('plan_operation') or q.get('PLAN_OPERATION') or 'UNKNOWN'
+            exp = q.get('explication_plan', '')
+            if exp and len(exp) > 200:
+                exp_preview = exp[:200] + '...'
+            else:
+                exp_preview = exp
+
+            context += f"  - SQL_ID={sid} | SQL: {sql_preview} | Plan: {plan_op}. {exp_preview}\n"
     
     # Anomalies
     anom = load_json_data('detected_anomalies.json', directory='data')
@@ -136,6 +181,29 @@ def chat_api():
     docs, _ = rag_system.retrieve_context(user_message)
     rag_context = "\n".join(docs)
     system_live_data = get_system_context()
+
+    # Détails structurés des requêtes lentes (pour forcer l'IA à s'appuyer dessus)
+    slow_queries = load_json_data('query_analysis.json')
+    slow_detail = "Aucune analyse de requêtes lentes disponible."
+    if slow_queries and isinstance(slow_queries, list):
+        lines = []
+        for q in slow_queries[:3]:
+            sid = q.get('sql_id', 'N/A')
+            sql_text = q.get('sql_text') or q.get('SQL_TEXT') or ''
+            plan_op = q.get('plan_operation') or q.get('PLAN_OPERATION') or 'UNKNOWN'
+            exp = q.get('explication_plan', '')
+            points = q.get('points_couteux') or []
+            recs = q.get('recommandations') or []
+
+            lines.append(
+                f"SQL_ID={sid}\n"
+                f"SQL={sql_text}\n"
+                f"PLAN_OPERATION={plan_op}\n"
+                f"EXPLICATION_PLAN={exp}\n"
+                f"POINTS_COUTEUX={points}\n"
+                f"RECOMMANDATIONS={recs}"
+            )
+        slow_detail = "\n\n".join(lines)
     
     # 2. Récupération de l'Historique (Nouveau !)
     history_context = get_conversation_history(limit=6) # On garde les 3 derniers échanges
@@ -147,6 +215,8 @@ def chat_api():
         "1. L'HISTORIQUE DE LA CONVERSATION (Mémoire).\n"
         "2. L'ÉTAT RÉEL DU SYSTÈME (Audit, Perf...).\n"
         "3. LA DOCUMENTATION (RAG).\n\n"
+        "L'état système et la section 'DÉTAILS STRUCTURÉS DES REQUÊTES LENTES' contiennent le SQL, le plan et l'analyse des requêtes lentes. "
+        "Quand l'utilisateur te demande d'expliquer des requêtes lentes, tu DOIS t'appuyer sur ces détails pour répondre et ne pas dire que ces informations manquent.\n\n"
         "Si l'utilisateur fait référence à une discussion passée (ex: 'la requête dont on parlait'), utilise l'historique.\n"
         "Sois concis."
     )
@@ -154,6 +224,7 @@ def chat_api():
     full_prompt = (
         f"{system_instruction}\n\n"
         f"--- ÉTAT SYSTÈME ACTUEL ---\n{system_live_data}\n\n"
+        f"--- DÉTAILS STRUCTURÉS DES REQUÊTES LENTES ---\n{slow_detail}\n\n"
         f"--- HISTORIQUE RÉCENT (MÉMOIRE) ---\n{history_context}\n\n"
         f"--- DOCUMENTATION (RAG) ---\n{rag_context}\n\n"
         f"UTILISATEUR (Message Actuel): {user_message}"
