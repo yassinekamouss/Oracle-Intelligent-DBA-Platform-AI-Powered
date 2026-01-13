@@ -1,113 +1,122 @@
-:root {
-    --oracle-red: #c74634;
-    --oracle-grey: #312d2a;
-    --success-green: #2ecc71;
-    --warning-orange: #f39c12;
-    --danger-red: #e74c3c;
+:root{
+    --accent-1: #0f4c75; /* deep blue */
+    --accent-2: #00b7c2; /* teal */
+    --muted: #6b7280;
+    --bg: #f4f7fb;
+    --surface: #ffffff;
+    --glass: rgba(255,255,255,0.6);
+    --card-shadow: 0 8px 30px rgba(16,24,40,0.06);
+    --radius: 12px;
 }
 
-body {
-    background-color: #f8f9fa;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+html,body{
+    height:100%;
+    margin:0;
+    font-family: Inter, 'Segoe UI', Roboto, -apple-system, 'Helvetica Neue', Arial;
+    background: linear-gradient(180deg,var(--bg),#ffffff);
+    color:#0b1220;
+    -webkit-font-smoothing:antialiased;
 }
 
-.sidebar {
-    height: 100vh;
-    background-color: var(--oracle-grey);
-    color: white;
-    position: fixed;
-    width: 250px;
-    padding-top: 20px;
+/* Sidebar (clean, compact, light) */
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    width:220px;
+    background:linear-gradient(180deg, #ffffff 0%, #f7fbfc 100%);
+    border-right:1px solid rgba(15,20,32,0.04);
+    padding:18px 16px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
 }
 
-.sidebar a {
-    color: #adb5bd;
-    text-decoration: none;
-    display: block;
-    padding: 15px 20px;
-    font-size: 1.1em;
+.sidebar-brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:8px 4px 14px 4px;
+    border-bottom:1px solid rgba(15,20,32,0.04);
 }
 
-.sidebar a:hover, .sidebar a.active {
-    color: white;
-    background-color: var(--oracle-red);
-    border-left: 5px solid white;
+.brand-logo{
+    width:100%;
+    height:auto;
+    display:block;
+    border-radius:10px;
+    object-fit:cover;
 }
 
-.content {
-    margin-left: 250px;
-    padding: 30px;
+/* If the brand container has no class, ensure it doesn't add extra padding */
+.sidebar > div{padding:0 4px 12px 4px}
+
+.brand-text strong{font-size:16px;display:block;color:var(--accent-1)}
+.brand-text small{font-size:11px;color:var(--muted);display:block;margin-top:2px}
+
+.sidebar a{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:10px 12px;
+    color:var(--muted);
+    text-decoration:none;
+    border-radius:8px;
+    font-weight:600;
+    transition:all .18s ease;
 }
 
-.card-stat {
-    border-radius: 10px;
-    border: none;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: transform 0.2s;
+.sidebar a i{width:22px;text-align:center;color:var(--accent-1)}
+
+.sidebar a:hover{background:rgba(11,18,32,0.03);color:var(--accent-1);transform:translateX(4px)}
+.sidebar a.active{background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:white}
+
+/* Main content area */
+.content{margin-left:220px;padding:36px;min-height:100vh}
+
+/* Cards and layouts */
+.card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--card-shadow);border:none}
+.card-header{padding:18px 20px;border-bottom:none;font-weight:700;color:var(--accent-1)}
+.card-body{padding:20px}
+
+/* Stat cards */
+.card-stat{overflow:hidden;border-radius:14px;padding:18px;color:#fff}
+.card-stat .display-4{font-size:1.8rem;margin:0}
+
+/* Buttons */
+.btn{border-radius:10px;font-weight:700}
+.btn-primary{background:linear-gradient(90deg,var(--accent-2),var(--accent-1));border:none;color:#fff}
+.btn-outline-primary{background:transparent;border:1px solid var(--accent-1);color:var(--accent-1)}
+
+/* Chat box */
+.chat-box{height:60vh;overflow:auto;padding:18px;border-radius:12px;background:linear-gradient(180deg,var(--glass),rgba(255,255,255,0.9));border:1px solid rgba(15,20,32,0.03)}
+.message{max-width:78%;padding:12px 16px;border-radius:14px;margin-bottom:12px}
+.user-msg{margin-left:auto;background:linear-gradient(90deg,var(--accent-2),var(--accent-1));color:#fff}
+.bot-msg{margin-right:auto;background:#f1f5f9;border:1px solid rgba(15,20,32,0.03)}
+
+/* Alerts and badges */
+.alert{border-radius:10px}
+.badge{border-radius:8px;padding:6px 10px}
+
+/* Forms */
+.form-control{border-radius:10px;border:1px solid rgba(15,20,32,0.06);padding:10px 12px}
+.form-control:focus{box-shadow:0 6px 20px rgba(11,18,32,0.06);border-color:var(--accent-1)}
+
+/* Typography tweaks */
+h2,h3,h4,h5{color:var(--accent-1);font-weight:700}
+
+/* list groups */
+.list-group-item{background:transparent;border:none;padding:.6rem 0;color:var(--muted)}
+
+/* responsive */
+@media (max-width:900px){
+    .sidebar{position:relative;width:100%;height:auto}
+    .content{margin-left:0;padding:20px}
 }
 
-.card-stat:hover {
-    transform: translateY(-5px);
-}
+/* small utilities */
+.text-muted{color:var(--muted)!important}
 
-.chat-box {
-    height: 60vh;
-    overflow-y: auto;
-    border: 1px solid #ddd;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-}
-
-.message {
-    margin-bottom: 15px;
-    padding: 10px 15px;
-    border-radius: 20px;
-    max-width: 80%;
-}
-
-.user-msg {
-    background-color: var(--oracle-red);
-    color: white;
-    margin-left: auto;
-    border-bottom-right-radius: 0;
-}
-
-.bot-msg {
-    background-color: #e9ecef;
-    color: black;
-    margin-right: auto;
-    border-bottom-left-radius: 0;
-}
-/* Ajouts recommandés pour les pages Security & Performance */
-
-.bg-soft-danger {
-    background-color: rgba(220, 53, 69, 0.1) !important;
-}
-
-.bg-gradient {
-    background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0)) !important;
-}
-
-.letter-spacing-2 {
-    letter-spacing: 2px;
-}
-
-.border-start-lg {
-    border-left: 1px solid #dee2e6;
-}
-
-@media (max-width: 992px) {
-    .border-start-lg {
-        border-left: none;
-        border-top: 1px solid #dee2e6;
-        padding-top: 1.5rem;
-        margin-top: 1.5rem;
-    }
-}
-
-.icon-box {
-    display: inline-block;
-    font-weight: bold;
-    font-size: 0.9rem;
-}
+/* smooth transitions */
+*{transition:background-color .15s ease,color .15s ease,transform .12s ease}

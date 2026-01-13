@@ -11,7 +11,14 @@
 <body>
 
     <div class="sidebar">
-        <h3 class="text-center mb-4"><i class="fas fa-database"></i> Oracle AI</h3>
+        <div >
+            <img src="{{ url_for('static', filename='images/logo_oracle.png') }}" alt="Oracle AI" class="brand-logo">
+        
+          
+        </div>
+        <div class="mt-4">
+
+        </div>
         <a href="/" class="{{ 'active' if request.path == '/' else '' }}">
             <i class="fas fa-home me-2"></i> Vue Globale
         </a>
