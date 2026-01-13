@@ -33,8 +33,8 @@ Suivez ces étapes pour déployer la plateforme en local.
 
 ### 2. Cloner le projet
 ```bash
-git clone [https://github.com/yassinekamouss/Oracle-Intelligent-DBA-Platform-AI-Powered.git](https://github.com/votre-username/projet-dba-ai.git)
-cd projet-dba-ai
+git clone https://github.com/yassinekamouss/Oracle-Intelligent-DBA-Platform-AI-Powered.git
+
 ```
 
 ### 3. Lancer l'infrastructure Oracle (Docker)
