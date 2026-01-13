@@ -1,0 +1,1 @@
+L'escalade de privilèges est une anomalie critique. Elle survient lorsqu'un utilisateur tente d'exécuter GRANT DBA TO lui-même ou un autre compte sans autorisation. Surveillez tout changement soudain dans les privilèges systèmes capturés dans les vues DBA_SYS_PRIVS.

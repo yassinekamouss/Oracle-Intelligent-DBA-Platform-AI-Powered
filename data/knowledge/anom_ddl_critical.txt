@@ -1,0 +1,1 @@
+Les modifications de structure (DROP TABLE, TRUNCATE, ALTER SYSTEM) sur des objets de production durant la journée sont suspectes. Ces actions doivent normalement être limitées aux fenêtres de maintenance et effectuées par des comptes identifiés.

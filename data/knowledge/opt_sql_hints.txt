@@ -1,0 +1,1 @@
+Les "Hints" Oracle permettent de forcer le comportement de l'optimiseur. Le hint /*+ INDEX(table index_name) */ force l'utilisation d'un index spécifique. Le hint /*+ FIRST_ROWS(n) */ optimise la requête pour retourner les n premières lignes le plus vite possible. Utilisez /*+ FULL(t) */ pour forcer un scan complet si l'index est moins performant.

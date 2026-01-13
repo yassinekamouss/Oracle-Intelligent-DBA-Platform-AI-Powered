@@ -1,0 +1,1 @@
+Le principe du moindre privilège stipule qu'un utilisateur ne doit posséder que les droits strictement nécessaires à sa fonction. Ne jamais accorder le rôle DBA à un utilisateur applicatif. Préférez des privilèges granulaires comme CREATE SESSION et des accès spécifiques sur les tables (GRANT SELECT ON schema.table).

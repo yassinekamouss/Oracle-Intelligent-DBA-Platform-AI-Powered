@@ -1,0 +1,1 @@
+L'audit est essentiel pour la traçabilité. Activez l'audit sur les tentatives de connexion échouées et sur les modifications de structure (DDL). La table AUD$ stocke ces informations. En Oracle 12c et plus, l'Audit Unifié est la recommandation pour centraliser les logs de sécurité.

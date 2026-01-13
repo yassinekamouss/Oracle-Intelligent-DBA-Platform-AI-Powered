@@ -1,0 +1,1 @@
+Oracle Flashback est une alternative rapide à la restauration RMAN. FLASHBACK TABLE nom_table TO BEFORE DROP permet de récupérer une table supprimée instantanément sans restaurer toute la base. Cela repose sur la zone de stockage "Recycle Bin".

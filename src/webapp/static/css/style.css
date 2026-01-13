@@ -1,0 +1,113 @@
+:root {
+    --oracle-red: #c74634;
+    --oracle-grey: #312d2a;
+    --success-green: #2ecc71;
+    --warning-orange: #f39c12;
+    --danger-red: #e74c3c;
+}
+
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.sidebar {
+    height: 100vh;
+    background-color: var(--oracle-grey);
+    color: white;
+    position: fixed;
+    width: 250px;
+    padding-top: 20px;
+}
+
+.sidebar a {
+    color: #adb5bd;
+    text-decoration: none;
+    display: block;
+    padding: 15px 20px;
+    font-size: 1.1em;
+}
+
+.sidebar a:hover, .sidebar a.active {
+    color: white;
+    background-color: var(--oracle-red);
+    border-left: 5px solid white;
+}
+
+.content {
+    margin-left: 250px;
+    padding: 30px;
+}
+
+.card-stat {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.card-stat:hover {
+    transform: translateY(-5px);
+}
+
+.chat-box {
+    height: 60vh;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.message {
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    border-radius: 20px;
+    max-width: 80%;
+}
+
+.user-msg {
+    background-color: var(--oracle-red);
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 0;
+}
+
+.bot-msg {
+    background-color: #e9ecef;
+    color: black;
+    margin-right: auto;
+    border-bottom-left-radius: 0;
+}
+/* Ajouts recommandés pour les pages Security & Performance */
+
+.bg-soft-danger {
+    background-color: rgba(220, 53, 69, 0.1) !important;
+}
+
+.bg-gradient {
+    background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0)) !important;
+}
+
+.letter-spacing-2 {
+    letter-spacing: 2px;
+}
+
+.border-start-lg {
+    border-left: 1px solid #dee2e6;
+}
+
+@media (max-width: 992px) {
+    .border-start-lg {
+        border-left: none;
+        border-top: 1px solid #dee2e6;
+        padding-top: 1.5rem;
+        margin-top: 1.5rem;
+    }
+}
+
+.icon-box {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 0.9rem;
+}

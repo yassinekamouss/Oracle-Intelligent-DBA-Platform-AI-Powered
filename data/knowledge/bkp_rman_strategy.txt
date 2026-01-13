@@ -1,0 +1,1 @@
+Une stratégie de sauvegarde robuste inclut une sauvegarde complète (Level 0) hebdomadaire et des sauvegardes incrémentales (Level 1) quotidiennes. Utilisez RMAN (Recovery Manager) pour garantir l'intégrité des blocs sauvegardés et permettre la compression des backups.

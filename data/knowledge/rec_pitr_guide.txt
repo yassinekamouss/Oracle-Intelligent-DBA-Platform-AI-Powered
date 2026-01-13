@@ -1,0 +1,1 @@
+La récupération Point-In-Time (PITR) permet de restaurer la base à un instant précis avant une erreur humaine. Cela nécessite que la base soit en mode ARCHIVELOG. La commande RMAN est : SET UNTIL TIME "to_date('...', '...')"; RESTORE DATABASE; RECOVER DATABASE;.

@@ -1,0 +1,1 @@
+Une injection SQL se reconnaît par des patterns suspects dans les logs comme l'usage de ' OR '1'='1' ou l'ajout de -- pour commenter la fin d'une requête. Surveillez les requêtes qui tentent d'accéder à la table SYS.USER$ ou qui utilisent massivement des UNION SELECT pour extraire des données structurelles.

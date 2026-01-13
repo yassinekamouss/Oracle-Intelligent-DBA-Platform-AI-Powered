@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 text-gray-800"><i class="fas fa-save text-primary me-2"></i> Stratégie de Sauvegarde & RMAN</h2>
+        <div>
+            <span class="badge bg-dark fs-6"><i class="fas fa-terminal me-2"></i>Script RMAN Généré</span>
+        </div>
+    </div>
+
+    {% if plan %}
+    <div class="row mb-4">
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-start border-4 border-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Période de Rétention
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ plan.retention_jours }} Jours</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar-alt fa-2x text-gray-300 opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-start border-4 border-secondary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">Emplacement Cible
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ plan.emplacement_stockage }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-hdd fa-2x text-gray-300 opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% set cost_color = 'success' if 'Bas' in plan.cout_estime else 'warning' if 'Moyen' in plan.cout_estime else
+        'danger' %}
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-start border-4 border-{{ cost_color }} shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-{{ cost_color }} text-uppercase mb-1">Impact
+                                Budgétaire</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ plan.cout_estime }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-coins fa-2x text-gray-300 opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 bg-white">
+            <h6 class="m-0 fw-bold text-primary"><i class="fas fa-chess-board me-2"></i>Détails de la Stratégie
+                Recommandée</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 border-end">
+                    <h6 class="text-muted text-uppercase small fw-bold">Type de Sauvegarde</h6>
+                    <p class="lead text-dark fw-bold mb-4">{{ plan.type }}</p>
+
+                    <div class="alert alert-light border shadow-sm">
+                        <i class="fas fa-info-circle text-info me-2"></i>
+                        <small class="text-muted">Ce type a été choisi par l'IA pour optimiser le ratio RPO/RTO en
+                            fonction de vos métriques.</small>
+                    </div>
+                </div>
+                <div class="col-md-6 ps-md-4">
+                    <h6 class="text-muted text-uppercase small fw-bold">Fréquence & Planning</h6>
+                    <div class="d-flex">
+                        <i class="fas fa-clock text-primary mt-1 me-3 fa-lg"></i>
+                        <p class="text-dark">{{ plan.frequence }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 bg-dark text-white d-flex justify-content-between align-items-center">
+            <h6 class="m-0 fw-bold"><i class="fas fa-terminal me-2"></i>Script RMAN (Prêt à l'emploi)</h6>
+            <button class="btn btn-sm btn-outline-light" onclick="copyToClipboard()">
+                <i class="far fa-copy me-1"></i> Copier le code
+            </button>
+        </div>
+        <div class="card-body bg-dark p-0">
+            <pre class="m-0 p-4 text-light font-monospace" id="rmanCode"
+                style="overflow-x: auto; color: #a5d6ff;"><code>{{ rman }}</code></pre>
+        </div>
+        <div class="card-footer bg-light py-2">
+            <small class="text-muted">
+                <i class="fas fa-exclamation-triangle text-warning me-1"></i>
+                Vérifiez toujours le script dans un environnement de test avant la production.
+            </small>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="text-center py-5">
+        <div class="mb-3">
+            <i class="fas fa-server fa-4x text-muted opacity-25"></i>
+        </div>
+        <h4 class="text-muted">Aucune stratégie définie</h4>
+        <p class="text-muted">Veuillez exécuter le module de sauvegarde pour générer un plan.</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    function copyToClipboard() {
+        const codeText = document.getElementById('rmanCode').innerText;
+        navigator.clipboard.writeText(codeText).then(() => {
+            // Feedback visuel temporaire
+            const btn = document.querySelector('.btn-outline-light');
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check me-1"></i> Copié !';
+            btn.classList.replace('btn-outline-light', 'btn-success');
+
+            setTimeout(() => {
+                btn.innerHTML = originalHtml;
+                btn.classList.replace('btn-success', 'btn-outline-light');
+            }, 2000);
+        });
+    }
+</script>
+{% endblock %}

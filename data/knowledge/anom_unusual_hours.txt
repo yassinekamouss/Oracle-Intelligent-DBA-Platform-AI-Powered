@@ -1,0 +1,1 @@
+Les connexions en dehors des heures de bureau (ex: 2h du matin) par des comptes applicatifs ou administratifs sont des anomalies potentielles. Si un utilisateur se connecte depuis une adresse IP inhabituelle pour effectuer des exports massifs (Data Pump), cela peut indiquer une fuite de données.

@@ -1,0 +1,7 @@
+.env
+__pycache__/
+venv/
+data/chroma_db
+data/*.csv
+data/*.json
+data/backup_script.rman

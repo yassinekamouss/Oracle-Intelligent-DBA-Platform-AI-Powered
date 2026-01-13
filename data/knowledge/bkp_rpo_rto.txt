@@ -1,0 +1,1 @@
+Le RPO (Recovery Point Objective) est la perte de données maximale tolérée (ex: 1 heure). Le RTO (Recovery Time Objective) est la durée maximale d'indisponibilité tolérée. Pour un RPO faible, utilisez le mode ARCHIVELOG et

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oracle AI Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div class="sidebar">
+        <h3 class="text-center mb-4"><i class="fas fa-database"></i> Oracle AI</h3>
+        <a href="/" class="{{ 'active' if request.path == '/' else '' }}">
+            <i class="fas fa-home me-2"></i> Vue Globale
+        </a>
+        <a href="/security" class="{{ 'active' if request.path == '/security' else '' }}">
+            <i class="fas fa-shield-alt me-2"></i> Sécurité
+        </a>
+        <a href="/performance" class="{{ 'active' if request.path == '/performance' else '' }}">
+            <i class="fas fa-tachometer-alt me-2"></i> Performance
+        </a>
+        <a href="/backup" class="{{ 'active' if request.path == '/backup' else '' }}">
+            <i class="fas fa-save me-2"></i> Sauvegardes
+        </a>
+        <a href="/chatbot" class="{{ 'active' if request.path == '/chatbot' else '' }}">
+            <i class="fas fa-robot me-2"></i> Assistant IA
+        </a>
+    </div>
+
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

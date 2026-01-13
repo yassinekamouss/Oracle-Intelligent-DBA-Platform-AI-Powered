@@ -1,0 +1,1 @@
+L'optimiseur basé sur les coûts (CBO) a besoin de statistiques à jour. Utilisez DBMS_STATS.GATHER_TABLE_STATS pour rafraîchir les métriques d'une table. Des statistiques périmées peuvent conduire l'optimiseur à choisir un mauvais plan d'exécution, rendant les requêtes soudainement lentes après un import massif de données.

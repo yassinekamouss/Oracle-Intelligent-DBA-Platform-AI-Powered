@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Assistant DBA Conversationnel</h2>
+
+<div class="card shadow h-100">
+    <div class="card-header bg-dark text-white d-flex justify-content-between">
+        <span><i class="fas fa-robot me-2"></i> Oracle AI Assistant</span>
+        <span class="badge bg-success">En ligne</span>
+    </div>
+    <div class="card-body">
+        <div id="chat-box" class="chat-box mb-3">
+            <div class="message bot-msg">
+                Bonjour ! Je suis votre assistant Oracle. Je peux vous aider sur l'optimisation, la sécurité ou la restauration. Posez-moi une question !
+            </div>
+        </div>
+        
+        <div class="input-group">
+            <input type="text" id="user-input" class="form-control" placeholder="Ex: Pourquoi ma requête SELECT est lente ?">
+            <button class="btn btn-primary" onclick="sendMessage()">Envoyer <i class="fas fa-paper-plane ms-1"></i></button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    async function sendMessage() {
+        const input = document.getElementById('user-input');
+        const chatBox = document.getElementById('chat-box');
+        const message = input.value.trim();
+
+        if (message === "") return;
+
+        // 1. Afficher message utilisateur
+        chatBox.innerHTML += `<div class="d-flex"><div class="message user-msg">${message}</div></div>`;
+        input.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // 2. Afficher indicateur de chargement
+        const loadingId = "loading-" + Date.now();
+        chatBox.innerHTML += `<div id="${loadingId}" class="message bot-msg"><i class="fas fa-spinner fa-spin"></i> Analyse en cours...</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        try {
+            // 3. Appel API Backend
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: message })
+            });
+            const data = await response.json();
+
+            // 4. Remplacer chargement par réponse IA (rendu Markdown simple)
+            document.getElementById(loadingId).remove();
+            // Conversion simple des sauts de ligne pour l'affichage
+            const formattedResponse = data.response.replace(/\n/g, "<br>");
+            chatBox.innerHTML += `<div class="d-flex"><div class="message bot-msg">${formattedResponse}</div></div>`;
+        
+        } catch (error) {
+            document.getElementById(loadingId).remove();
+            chatBox.innerHTML += `<div class="message bot-msg text-danger">Erreur de connexion au serveur IA.</div>`;
+        }
+        
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Envoi avec Entrée
+    document.getElementById("user-input").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") sendMessage();
+    });
+</script>
+{% endblock %}

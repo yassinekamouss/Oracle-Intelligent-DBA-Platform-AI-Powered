@@ -1,0 +1,10 @@
+flask
+requests
+chromadb
+sentence_transformers
+pandas
+python-dotenv
+pyyaml
+oracledb
+wcwidth
+google-generativeai

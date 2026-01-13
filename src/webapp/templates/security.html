@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 text-gray-800"><i class="fas fa-user-shield text-danger me-2"></i> Audit de Sécurité & Conformité</h2>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card shadow border-0">
+                <div class="card-body p-5 bg-gradient text-center rounded
+                    {% if data.score >= 80 %} bg-success text-white
+                    {% elif data.score >= 50 %} bg-warning text-dark
+                    {% else %} bg-danger text-white {% endif %}">
+                    
+                    <h5 class="text-uppercase letter-spacing-2 mb-3">Score de Sécurité Global</h5>
+                    <div class="display-1 fw-bold mb-3 text-black" >{{ data.score }}<span class="fs-4">/100</span></div>
+                    
+                    <p class="lead">
+                        {% if data.score >= 80 %}
+                            <i class="fas fa-check-circle me-2 "></i> <label class="text-black fw-bold">Niveau de sécurité excellent.</label>
+                        {% elif data.score >= 50 %}
+                            <i class="fas fa-exclamation-triangle me-2 text-black"></i> <label class="text-black fw-bold">Niveau moyen. Des corrections sont nécessaires.</label>
+                        {% else %}
+                            <i class="fas fa-times-circle me-2 "></i> <label class="text-danger fw-bold">Niveau critique. Action immédiate requise.</label>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-7 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-header py-3 bg-white border-bottom-0">
+                    <h6 class="m-0 fw-bold text-danger"><i class="fas fa-bug me-2"></i> Vulnérabilités Détectées</h6>
+                </div>
+                <div class="card-body">
+                    {% if data.risques %}
+                        <div class="list-group list-group-flush">
+                            {% for risque in data.risques %}
+                            <div class="list-group-item px-0 py-3">
+                                <div class="d-flex w-100 justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-1 fw-bold text-dark">
+                                        {% if 'Privilège' in risque.nom or 'DBA' in risque.details %} <i class="fas fa-id-badge text-warning me-2"></i>
+                                        {% elif 'Mot de passe' in risque.nom %} <i class="fas fa-key text-info me-2"></i>
+                                        {% else %} <i class="fas fa-exclamation-circle text-danger me-2"></i>
+                                        {% endif %}
+                                        {{ risque.nom }}
+                                    </h6>
+                                    <span class="badge rounded-pill 
+                                        {% if risque.severite|upper == 'CRITIQUE' %} bg-danger
+                                        {% elif risque.severite|upper == 'ÉLEVÉE' %} bg-orange
+                                        {% else %} bg-warning text-dark {% endif %}">
+                                        {{ risque.severite }}
+                                    </span>
+                                </div>
+                                <p class="mb-1 text-muted small ps-4 border-start border-3 border-light">
+                                    {{ risque.details }}
+                                </p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5 text-muted">
+                            <i class="fas fa-shield-alt fa-3x mb-3 text-success"></i>
+                            <p>Aucune vulnérabilité majeure détectée.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5 mb-4">
+            <div class="card shadow h-100 bg-light border-0">
+                <div class="card-header py-3 bg-primary text-white">
+                    <h6 class="m-0 fw-bold"><i class="fas fa-clipboard-list me-2"></i> Plan de Remédiation IA</h6>
+                </div>
+                <div class="card-body">
+                    {% if data.recommandations %}
+                        <ul class="list-unstyled">
+                            {% for rec in data.recommandations %}
+                            <li class="mb-3 d-flex align-items-start bg-white p-3 rounded shadow-sm">
+                                <i class="fas fa-check-circle text-success mt-1 me-3 flex-shrink-0"></i>
+                                <span class="text-secondary">{{ rec }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="alert alert-success">
+                            Le système est conforme aux meilleures pratiques.
+                        </div>
+                    {% endif %}
+                    
+                    <div class="mt-4 pt-3 border-top text-center">
+                         <button class="btn btn-outline-primary btn-sm rounded-pill">
+                            <i class="fas fa-file-pdf me-1"></i> Exporter le rapport PDF
+                         </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

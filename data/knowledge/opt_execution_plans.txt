@@ -1,0 +1,1 @@
+Un plan d'exécution montre le chemin choisi par l'optimiseur. "INDEX RANGE SCAN" indique une recherche efficace dans une plage de l'index. "HASH JOIN" est souvent plus performant que "NESTED LOOPS" pour joindre de grandes tables. Un coût (COST) élevé dans le plan indique souvent un manque de statistiques à jour ou une jointure mal optimisée.

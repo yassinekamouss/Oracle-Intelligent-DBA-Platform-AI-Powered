@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 text-gray-800">
+            <i class="fas fa-tachometer-alt text-primary me-2"></i> Optimisation des Performances SQL
+        </h2>
+        
+        <div>
+            <span class="badge bg-primary fs-6 me-2">{{ queries|length }} Requêtes Lentes</span>
+            <span class="badge bg-success fs-6">IA Tuning Active</span>
+        </div>
+    </div>
+
+    {% if queries %}
+        {% for query in queries %}
+        {% set plan_id = "collapsePlan_" ~ loop.index %}
+        {% set bottle_id = "collapseBottle_" ~ loop.index %}
+        
+        <div class="card shadow mb-5 border-start border-5 border-primary">
+            
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 fw-bold text-primary">
+                    <i class="fas fa-code me-2"></i>SQL_ID: <span class="text-dark font-monospace">{{ query.sql_id }}</span>
+                </h6>
+                <span class="badge bg-light text-dark border">Analyse #{{ loop.index }}</span>
+            </div>
+            
+            <div class="card-body">
+                
+                <div class="alert alert-success d-flex align-items-start mb-4 shadow-sm">
+                    <i class="fas fa-arrow-trend-up fa-2x me-3 mt-1"></i>
+                    <div>
+                        <h6 class="alert-heading fw-bold">Potentiel d'optimisation</h6>
+                        <div class="small">
+                            {{ query.gain_estime }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <h6 class="text-uppercase text-muted small fw-bold mb-3">Détails Techniques</h6>
+                        
+                        <div class="mb-3">
+                            <button class="btn btn-outline-primary w-100 d-flex justify-content-between align-items-center mb-2" 
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#{{ plan_id }}" 
+                                    aria-expanded="false">
+                                <span><i class="fas fa-search me-2"></i>Voir l'analyse du plan</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            
+                            <div class="collapse" id="{{ plan_id }}">
+                                <div class="card card-body bg-light border-0 shadow-inner text-secondary small">
+                                    {{ query.explication_plan }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <button class="btn btn-outline-danger w-100 d-flex justify-content-between align-items-center" 
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#{{ bottle_id }}" 
+                                    aria-expanded="false">
+                                <span><i class="fas fa-exclamation-triangle me-2"></i>Voir les goulots d'étranglement</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            
+                            <div class="collapse" id="{{ bottle_id }}">
+                                <div class="card card-body bg-soft-danger border-0 mt-2">
+                                    <ul class="mb-0 small ps-3 text-danger">
+                                        {% for point in query.points_couteux %}
+                                        <li class="mb-1">{{ point }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 border-start-lg">
+                        <h6 class="text-uppercase text-muted small fw-bold mb-3 ps-lg-3">Actions Recommandées</h6>
+                        
+                        <div class="ps-lg-3">
+                            {% for rec in query.recommandations %}
+                            <div class="d-flex mb-3">
+                                <div class="flex-shrink-0 mt-1">
+                                    {% if rec.type == 'Index' %}
+                                        <div class="icon-box bg-success text-white rounded-circle text-center shadow-sm" style="width:32px; height:32px; line-height:32px;">I</div>
+                                    {% elif 'Hint' in rec.type %}
+                                        <div class="icon-box bg-warning text-dark rounded-circle text-center shadow-sm" style="width:32px; height:32px; line-height:32px;">H</div>
+                                    {% elif 'Stats' in rec.type %}
+                                        <div class="icon-box bg-info text-white rounded-circle text-center shadow-sm" style="width:32px; height:32px; line-height:32px;">S</div>
+                                    {% else %}
+                                        <div class="icon-box bg-primary text-white rounded-circle text-center shadow-sm" style="width:32px; height:32px; line-height:32px;"><i class="fas fa-wrench"></i></div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-1 fw-bold text-dark">{{ rec.type }}</h6>
+                                    <p class="mb-0 small text-muted">{{ rec.description }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                            <div class="mt-4 text-end">
+                                <button class="btn btn-sm btn-primary shadow-sm">
+                                    <i class="fas fa-code me-1"></i> Générer script SQL
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-light py-2">
+                <small class="text-muted"><i class="fas fa-robot me-1"></i> Analyse générée automatiquement par LLM Engine</small>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="text-center py-5">
+            <div class="mb-3">
+                <i class="fas fa-check-circle fa-4x text-success opacity-50"></i>
+            </div>
+            <h4 class="text-muted">Tout est calme !</h4>
+            <p class="text-muted">Aucune requête lente détectée pour le moment.</p>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .bg-soft-danger {
+        background-color: rgba(220, 53, 69, 0.1);
+    }
+    .shadow-inner {
+        box-shadow: inset 0 2px 4px 0 rgba(0,0,0,0.06);
+    }
+</style>
+{% endblock %}
