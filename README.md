@@ -1,42 +1,70 @@
-# Plateforme Intelligente de Gestion Oracle avec IA
+# 🛡️ Oracle Intelligent DBA Platform (AI-Powered)
 
-Ce projet est une plateforme intelligente pour l'assistance à l'administration de bases de données Oracle. Il combine l'extraction de données réelles, l'analyse par IA (LLM Gemini via l'API Google Generative AI) et une base de connaissances RAG pour fournir des audits de sécurité, des optimisations de requêtes et des recommandations de sauvegarde.
+![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python&logoColor=white)
+![Oracle](https://img.shields.io/badge/Oracle-23c_Free-red?logo=oracle&logoColor=white)
+![Gemini](https://img.shields.io/badge/AI-Gemini_2.0_Flash-orange?logo=google&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Frontend-Streamlit-FF4B4B?logo=streamlit&logoColor=white)
+![Docker](https://img.shields.io/badge/Infrastructure-Docker-2496ED?logo=docker&logoColor=white)
 
-## Prérequis
+> *Une plateforme d'administration de base de données autonome (Autonomous DBA) capable d'auditer la sécurité, d'optimiser les performances SQL et de gérer les incidents grâce à l'Intelligence Artificielle Générative (RAG + LLM).*
 
-- **Python 3.8+**
-- **Clé API Gemini (Google Generative AI)** (dans un fichier `.env`)
-- **Base de données Oracle** (nécessaire pour l'extraction)
-  - Accès `SYSDBA` ou utilisateur avec privilèges d'audit.
+---
 
-## Installation
+Ce projet fournit une plateforme d'administration pour bases de données Oracle enrichie par l'Intelligence Artificielle. Il combine l'extraction automatisée de données, des modules d'analyse (audit de sécurité, optimisation des requêtes, suggestions de sauvegarde) et un moteur RAG (Retrieval-Augmented Generation) couplé à un LLM pour produire des recommandations exploitables, des rapports techniques et un assistant conversationnel pour les DBA.
 
-1. **Cloner le projet**
-   Navigate to the project root.
+## Capture d'écran
 
-2. **Configuration de l'environnement**
-   Il est recommandé d'utiliser un environnement virtuel :
+Vue d'ensemble du tableau de bord :
 
-   ```bash
-   python -m venv venv
-   # Windows
-   .\venv\Scripts\activate
-   # Linux/Mac
-   source venv/bin/activate
-   ```
+![Tableau de bord](images_for_readme/tableau_bord.png)
 
-3. **Installer les dépendances**
+Assistant chatbot :
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+![Assistant Chatbot](images_for_readme/chatbot.png)
 
-4. **Configuration API**
-   Créez un fichier `.env` à la racine (si absent) et ajoutez votre clé :
+## 🚀 Installation et Démarrage
 
+Suivez ces étapes pour déployer la plateforme en local.
+
+### 1. Prérequis
+* Docker Desktop installé et lancé.
+* Python 3.9 ou supérieur.
+* Une clé API Google Gemini (gratuite via Google AI Studio).
+
+### 2. Cloner le projet
+```bash
+git clone [https://github.com/yassinekamouss/Oracle-Intelligent-DBA-Platform-AI-Powered.git](https://github.com/votre-username/projet-dba-ai.git)
+cd projet-dba-ai
 ```
-GEMINI_API_KEY=votre_clé_api
+
+### 3. Lancer l'infrastructure Oracle (Docker)
+Nous utilisons une image légère d'Oracle 23c Free.
+```bash
+docker run -d --name oracle-db -p 1521:1521 -e ORACLE_PASSWORD=password -v oracle-data:/opt/oracle/oradata gvenzl/oracle-free:latest
 ```
+⏳ Attendre environ 2 minutes que la base soit affichée comme "HEALTHY".
+
+### 4. Configuration de l'environnement Python
+```bash
+# Création de l'environnement virtuel
+python -m venv venv
+
+# Activation (Windows)
+venv\Scripts\activate
+# Activation (Mac/Linux)
+source venv/bin/activate
+
+# Installation des dépendances
+pip install -r requirements.txt
+```
+
+### 5. Configuration des secrets
+Créez un fichier `.env` à la racine (si absent) et ajoutez votre clé :
+
+```Ini,TOML
+GOOGLE_API_KEY=votre_clé_api_ici_AIzaSy...
+```
+--- 
 
 _Note : Le projet utilise le dossier `data/` pour stocker les données et résultats._
 
@@ -105,3 +133,14 @@ python src/webapp/app.py
 - `src/` : Code source des modules Python.
 - `src/webapp/` : Application Flask et templates HTML.
 - `data/` : Dossier principal pour les données (CSV extraits, JSON résultats, Base Vectorielle ChromaDB).
+
+
+
+
+
+## 👤 Auteur
+- **Yassine Kamouss**
+- **Yahya Ahmane**
+---
+
+© 2026 - Oracle AI Platform Project. Tous droits réservés.
